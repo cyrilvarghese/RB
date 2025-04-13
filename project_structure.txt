@@ -1,0 +1,15 @@
+.
+├── app/
+│   ├── __init__.py
+│   ├── main.py
+│   ├── core/
+│   │   ├── __init__.py
+│   │   ├── config.py
+│   │   └── supabase.py
+│   └── routers/
+│       ├── __init__.py
+│       └── files.py
+├── .env
+├── requirements.txt
+├── Dockerfile
+└── docker-compose.yml 
