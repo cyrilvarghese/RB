@@ -9,4 +9,5 @@ dependencies:
     - fastapi
     - uvicorn
     - python-dotenv
-    - supabase 
+    - pydantic-settings
+    - httpx 

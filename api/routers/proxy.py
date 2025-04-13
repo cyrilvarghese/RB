@@ -1,13 +1,17 @@
+import os
+from dotenv import load_dotenv
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import Response
 import httpx
+
+load_dotenv()
 
 router = APIRouter(
     prefix="/flyer",
     tags=["proxy"]
 )
 
-BASE_URL = "https://ayxhtlzyhpsjykxxnqqh.supabase.co/storage/v1/object/public/property_html_files"
+BASE_URL = f"{os.getenv('SUPABASE_URL')}/storage/v1/object/public/property_html_files"
 
 @router.get("/{file_id}")
 async def serve_page(file_id: str):

@@ -1,10 +1,7 @@
 from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
-    # Supabase configuration
-    SUPABASE_URL: str
-    SUPABASE_KEY: str
-    
+    # Add any other configuration settings here if needed
     class Config:
         env_file = ".env"
 
