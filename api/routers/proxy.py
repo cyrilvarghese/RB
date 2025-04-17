@@ -11,7 +11,7 @@ router = APIRouter(
     tags=["proxy"]
 )
 
-BASE_URL = f"{os.getenv('SUPABASE_URL')}/storage/v1/object/public/property_html_files"
+BASE_URL = f"{os.getenv('SUPABASE_URL')}/storage/v1/object/public/static_flyers/naresh"
 
 @router.get("/{file_id}")
 async def serve_page(file_id: str):
