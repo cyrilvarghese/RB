@@ -4,7 +4,7 @@ from functools import lru_cache
 class Settings(BaseSettings):
     SUPABASE_URL: str
     SUPABASE_KEY: str
-    BUCKET_NAME: str = "property_html_files"
+    BUCKET_NAME: str = "static_flyers"
 
     class Config:
         env_file = ".env"
