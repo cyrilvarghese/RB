@@ -7,22 +7,22 @@ import httpx
 load_dotenv()
 
 router = APIRouter(
-    prefix="/flyer",
+    prefix="",
     tags=["proxy"]
 )
 
-BASE_URL = f"{os.getenv('SUPABASE_URL')}/storage/v1/object/public/static_flyers/naresh"
+BASE_URL = f"{os.getenv('SUPABASE_URL')}/storage/v1/object/public/static_flyers"
 
-@router.get("/{file_id}")
-async def serve_page(file_id: str):
+@router.get("/{user_id}/{file_id}")
+async def get_flyer(user_id: str, file_id: str):
     """Proxy and serve HTML content directly from file ID"""
     try:
         # Construct full URL
-        url = f"{BASE_URL}/{file_id}"
+        full_url = f"{BASE_URL}/{user_id}/{file_id}"
         
         # Fetch and serve content
         async with httpx.AsyncClient() as client:
-            response = await client.get(url)
+            response = await client.get(full_url)
             response.raise_for_status()
             content = response.text
         
