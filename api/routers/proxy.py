@@ -55,6 +55,14 @@ async def serve_sitemap():
         print(f"❌ ERROR: Failed to serve sitemap: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Error serving sitemap: {str(e)}")
 
+@router.get("/robots.txt")
+async def serve_robots_txt():
+    """Serve robots.txt with sitemap location"""
+    return Response(
+        content="User-agent: *\nDisallow:\nSitemap: https://show.realbroker.pro/sitemap.xml",
+        media_type="text/plain"
+    )
+
 # Specific route for image proxy
 @router.get("/image-proxy/{image_name}")
 async def proxy_image(request: Request, image_name: str, width: int = 1200, height: int = 630, quality: int = 80):
