@@ -25,6 +25,36 @@ CACHE_DIR = Path(os.getenv('CACHE_DIR', '/data/image_cache'))
 CACHE_DIR.mkdir(exist_ok=True, parents=True)
 print(f"📁 CACHE DIRECTORY: {CACHE_DIR.absolute()}")
 
+# Specific routes first
+@router.get("/sitemap")
+async def serve_sitemap():
+    """Proxy the sitemap XML from Supabase function"""
+    try:
+        print(f"📝 SITEMAP REQUEST: Fetching from Supabase function")
+        start_time = datetime.now()
+        
+        sitemap_url = "https://ayxhtlzyhpsjykxxnqqh.functions.supabase.co/generate-sitemap"
+        async with httpx.AsyncClient() as client:
+            response = await client.get(sitemap_url)
+            response.raise_for_status()
+            sitemap_content = response.text
+            
+        processing_time = (datetime.now() - start_time).total_seconds()
+        print(f"✅ SITEMAP SERVED: Processing time: {processing_time:.2f}s")
+            
+        return Response(
+            content=sitemap_content,
+            media_type="application/xml",
+            headers={
+                "Cache-Control": "public, max-age=3600",
+                "Content-Type": "application/xml; charset=utf-8",
+            }
+        )
+        
+    except Exception as e:
+        print(f"❌ ERROR: Failed to serve sitemap: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error serving sitemap: {str(e)}")
+
 # Specific route for image proxy
 @router.get("/image-proxy/{image_name}")
 async def proxy_image(request: Request, image_name: str, width: int = 1200, height: int = 630, quality: int = 80):
@@ -90,18 +120,17 @@ async def proxy_image(request: Request, image_name: str, width: int = 1200, heig
         print(f"❌ ERROR: Failed to optimize image {image_name}: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Error optimizing image: {str(e)}")
 
-# HTML flyer route with more specific path
+# Generic route last
 @router.get("/{user_id}/{file_id:path}")
 async def get_flyer(request: Request, user_id: str, file_id: str):
     """Proxy and serve HTML content with optimized OG images"""
+    # Skip if this is a special route
+    if user_id in ["sitemap", "image-proxy"]:
+        raise HTTPException(status_code=404, detail="Not found")
+    
     print(f"📄 HTML REQUEST: /{user_id}/{file_id}")
     start_time = datetime.now()
     
-    # Skip if this is an image-proxy request
-    if user_id == "image-proxy":
-        print(f"⚠️ CONFLICT: Attempted to access image-proxy as user_id")
-        raise HTTPException(status_code=404, detail="Not found")
-        
     try:
         # Construct full URL
         full_url = f"{BASE_URL}/{user_id}/{file_id}"
