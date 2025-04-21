@@ -25,7 +25,7 @@ app.add_middleware(
 # Root endpoint
 @app.get("/")
 async def root():
-    return {"message": "Welcome to File Server API"}
+    return {"visit www.realbroker.pro"}
 
 # Health check endpoint
 @app.get("/health")
