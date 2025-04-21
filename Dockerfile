@@ -1,35 +1,36 @@
-# Use miniconda3 as base image with a specific version tag for reproducibility
-FROM continuumio/miniconda3:23.10.0-1
+# Use Python 3.11 slim image for smaller size
+FROM python:3.11-slim
 
 # Set working directory
 WORKDIR /app
 
-# Copy only the environment files first to leverage caching
-COPY environment.yml .
+# Install system dependencies for Pillow
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    curl \
+    libjpeg-dev \
+    zlib1g-dev \
+    libpng-dev \
+    && rm -rf /var/lib/apt/lists/*
 
-# Create conda environment
-RUN conda env create -f environment.yml && \
-    conda clean -afy  # Clean conda cache to reduce image size
+# Copy requirements first to leverage Docker cache
+COPY requirements.txt .
 
-# Make RUN commands use the new environment
-SHELL ["conda", "run", "-n", "file-server", "/bin/bash", "-c"]
-
-# Install only necessary system packages
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends curl && \
-    rm -rf /var/lib/apt/lists/* && \
-    apt-get clean
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
 COPY . .
 
+# Create cache directory
+RUN mkdir -p image_cache && chmod 777 image_cache
+
 # Expose port (Render will override this with their own port)
 EXPOSE 8000
 
-# Health check for zero-downtime deploys
+# Health check
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
     CMD curl -f http://localhost:8000/health || exit 1
 
-# Use exec form of CMD for better signal handling
-CMD ["conda", "run", "--no-capture-output", "-n", "file-server", \
-    "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"] 
+# Start command using $PORT environment variable (Render requires this)
+CMD uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000}

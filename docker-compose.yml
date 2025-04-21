@@ -8,4 +8,11 @@ services:
     environment:
       - SUPABASE_URL=${SUPABASE_URL}
       - SUPABASE_KEY=${SUPABASE_KEY}
-    restart: unless-stopped 
+      - HOST_URL=${HOST_URL}
+      - CACHE_DIR=/data/image_cache
+    volumes:
+      - image_cache:/data/image_cache
+    restart: unless-stopped
+
+volumes:
+  image_cache:
