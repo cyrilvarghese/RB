@@ -1,0 +1,79 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.env
+.venv
+.python-version
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+.vs/
+
+# FastAPI specific
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+.mypy_cache/
+
+# Logs
+*.log
+logs/
+log/
+
+# Docker
+.docker/
+docker-compose.override.yml
+
+# Conda
+/conda-env/
+*.conda
+
+# Project specific
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Cache
+.cache/
+.ruff_cache/
+image_cache/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Temporary files
+*.tmp
+*.temp
+temp/
+tmp/ 
