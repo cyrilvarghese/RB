@@ -26,7 +26,7 @@ CACHE_DIR.mkdir(exist_ok=True, parents=True)
 print(f"📁 CACHE DIRECTORY: {CACHE_DIR.absolute()}")
 
 # Specific routes first
-@router.get("/sitemap")
+@router.get("/sitemap.xml")
 async def serve_sitemap():
     """Proxy the sitemap XML from Supabase function"""
     try:
